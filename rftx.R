@@ -25,13 +25,13 @@ ftxRequest <- function(credentials = list(), method, path, params = NULL, body =
   } else {
   
     headers <- setHeaders(credentials, method, path, body)
+    url <- paste0(BASE_URL, path)
     
     METHOD <- getFromNamespace(method, ns = 'httr')
       
     res <- tryCatch(
       
-      METHOD(BASE_URL,
-             path = path,
+      METHOD(url,
              add_headers(.headers = headers),
              query = params,
              body
