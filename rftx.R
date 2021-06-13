@@ -1,32 +1,30 @@
 library(httr)
 library(digest)
+library(caTools)
 
 BASE_URL <- "ftx.com/api"
-CREDENTIALS <- c(FTX_KEY = "",
-                 FTX_SECRET = "",
-                 FTX_SUBACCOUNT = "")
-
 SUBACCOUNT_ENDPOINT <- "/subaccounts"
 
 
 
-getAllSubaccounts <- function(request, credentials) {
+getAllSubaccounts <- function(credentials) {
+  
+  ftxRequest(credentials, "GET", "/subaccounts")
   
 }
 
-ftxRequest <- function(credentials = list(), method, path, params = NULL, body = NULL, retries = 0) {
+ftxRequest <- function(credentials, method, path, params = NULL, body = NULL, retries = 0) {
   
   BASE_URL <- "https://ftx.com/api"
   
   if(!validateCredentials(creds)) {
     
-    "Error - credentials not set/invalid. Use setCredentials to set your API-key and secret"
+    "Error - credentials not set/invalid. Use setCredentials to set your API-key, secret and subaccount(optional)"
     
   } else {
   
     headers <- setHeaders(credentials, method, path, body)
     url <- paste0(BASE_URL, path)
-    
     METHOD <- getFromNamespace(method, ns = 'httr')
       
     res <- tryCatch(
@@ -55,12 +53,42 @@ setHeaders <- function(credentials,
   
   ftx_ts <- timestamp()
   signaturePayload <- paste0(ftx_ts, method, path, body)
-  ftx_sign <- hmac(credentials$FTX_SECRET, signaturePayload, "sha256")
   
-  c("FTX-KEY" = credentials$FTX_KEY,
-    "FTX-SIGN" = ftx_sign,
-    "FTX-TS" = ftx_ts,
-    "FTX-SUBACCOUNT" = credentials$FTX_SUBACCOUNT)
+  print(signaturePayload)
+  
+  ftx_sign <- hmac(base64encode(credentials$FTX_SECRET, "character"), signaturePayload, "sha256")
+  
+  if(is.null(credentials$FTX_SUBACCOUNT)) {
+
+    c("FTX-KEY" = credentials$FTX_KEY,
+      "FTX-SIGN" = ftx_sign,
+      "FTX-TS" = ftx_ts)
+     
+  } else {
+    
+    c("FTX-KEY" = credentials$FTX_KEY,
+      "FTX-SIGN" = ftx_sign,
+      "FTX-TS" = ftx_ts,
+      "FTX-SUBACCOUNT" = credentials$FTX_SUBACCOUNT)
+    
+  }
+}
+
+setCredentials <- function(ftx_api, ftx_secret, ftx_subaccount = NULL) {
+  
+  if(is.null(ftx_subaccount)) {
+    
+    list("FTX_API" = ftx_api,
+         "FTX_SECRET" = ftx_secret)
+    
+  } else {
+    
+    list("FTX_API" = ftx_api,
+         "FTX_SECRET" = ftx_secret,
+         "FTX_SUBACCOUNT" = ftx_subaccount)  
+    
+  }
+  
 }
 
 validateCredentials <- function(credentials = list()) {
@@ -70,5 +98,5 @@ validateCredentials <- function(credentials = list()) {
 }
 
 timestamp <- function() {
-  as.character(round(as.numeric(Sys.time()) * 1e3))
+  as.character(round(as.numeric(Sys.time())*1000, digits = 0))
 }
