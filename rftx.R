@@ -33,7 +33,7 @@ getOrderbook <- function(symbol, depth = 20) {
 
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
 
-  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades", )
+  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
   
   ftxPublicRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis))
   
@@ -41,14 +41,17 @@ getTrades <- function(symbol, start_time_millis, end_time_millis) {
 
 getHistoricalPrices <- function(symbol, resolution, start_time_millis, end_time_millis) {
   
-  endpoint <- paste0(MARKETS_ENDPOINT, symbol, "/candles")
+  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/candles")
   
   ftxPublicRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis, resolution))
 }
 
 #----------------FUTURES---------------------------------------------------------------------------------------------
 
-getFutures <- function() {}
+getFutures <- function() {
+  
+  
+}
 
 getFuture <- function(symbol) {}
 
