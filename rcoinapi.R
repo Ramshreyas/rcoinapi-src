@@ -16,9 +16,19 @@ ORDERBOOKL3_ENDPOINT <- "/v1/orderbooks3/"
 
 getExchanges <- function(exchangeId = NULL) {
   
-  endpoint <- paste0(EXCHANGES_ENDPOINT, exchangeId)
-  
-  executeRequest("GET", endpoint)
+  if(length(exchangeId = 1)) {
+    
+    endpoint <- paste0(EXCHANGES_ENDPOINT, exchangeId)
+    
+    executeRequest("GET", endpoint)
+    
+  } else {
+    
+    endpoint <- paste0(EXCHANGES_ENDPOINT)
+    
+    executeRequest("GET", endpoint, list)
+    
+  }
   
 }
 
