@@ -1,17 +1,24 @@
 library(httr)
 library(jsonlite)
 
-BASE_URL <- "ftx.com/api"
-MARKETS_ENDPOINT <- "/markets"
-FUTURES_ENDPOINT <- "/futures"
-EXPIRED_FUTURES_ENDPOINT <- "/expired_futures"
-INDEXES_ENDPOINT <- "/indexes"
+BASE_URL <- "https://rest.coinapi.io"
+EXCHANGES_ENDPOINT <- "/v1/exchanges/"
+ASSETS_ENDPOINT <- "/v1/assets/"
+SYMBOLS_ENDPOINT <- "/v1/symbols/"
+EXCHANGERATE_ENDPOINT <- "/v1/exchangerate/"
+OHLCV_ENDPOINT <- "/v1/ohlcv/"
+TRADES_ENDPOINT <- "/v1/trades/"
+QUOTES_ENDPOINT <- "v1/quotes/"
+ORDERBOOKS_ENDPOINT <- "/v1/orderbooks/"
+ORDERBOOKL3_ENDPOINT <- "/v1/orderbooks3/"
 
 #----------------MARKETS---------------------------------------------------------------------------------------------
 
-getMarkets <- function() {
+getExchanges <- function(exchangeId = NULL) {
   
-  ftxPublicRequest("GET", MARKETS_ENDPOINT)
+  endpoint <- paste0(EXCHANGES_ENDPOINT, exchangeId)
+  
+  executeRequest("GET", endpoint)
   
 }
 
@@ -19,7 +26,7 @@ getMarket <- function(symbol) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol)
   
-  ftxPublicRequest("GET", endpoint)
+  executeRequest("GET", endpoint)
   
 }
 
@@ -27,7 +34,7 @@ getOrderbook <- function(symbol, depth = 20) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/orderbook?depth=", depth)
   
-  ftxPublicRequest("GET", endpoint)
+  executeRequest("GET", endpoint)
   
 }
 
@@ -35,7 +42,7 @@ getTrades <- function(symbol, start_time_millis, end_time_millis) {
 
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
   
-  ftxPublicRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis))
+  executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis))
   
 }
 
@@ -43,7 +50,7 @@ getHistoricalPrices <- function(symbol, resolution, start_time_millis, end_time_
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/candles")
   
-  ftxPublicRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis, resolution))
+  executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis, resolution))
 }
 
 #----------------FUTURES---------------------------------------------------------------------------------------------
@@ -67,9 +74,11 @@ getHistoricalIndex <- function(symbol, resolution, start_time_millis, end_time_m
 
 #----------------UTILS---------------------------------------------------------------------------------------------
 
-ftxPublicRequest <- function(method, path, params = NULL, body = NULL, retries = 0) {
+executeRequest <- function(method, path, params = NULL, body = NULL, retries = 0) {
   
-  BASE_URL <- "https://ftx.com/api"
+  apiKey <- Sys.getenv("COIN_API_KEY")
+  
+  if(apiKey == "") stop("No API Key!! Please set CoinAPI key with setAPIKey(<yourkeygoeshere>)")
   
   url <- paste0(BASE_URL, path)
   METHOD <- getFromNamespace(method, ns = 'httr')
@@ -78,7 +87,8 @@ ftxPublicRequest <- function(method, path, params = NULL, body = NULL, retries =
     
     METHOD(url,
            query = params,
-           body
+           body,
+           add_headers(`X-CoinAPI-Key` = coinApiKey)
     ),
     
     error = function(e) e
@@ -86,6 +96,12 @@ ftxPublicRequest <- function(method, path, params = NULL, body = NULL, retries =
   )
   
   parseJSONText(res)
+  
+}
+
+setApiKey <- function(apiKey) {
+  
+  Sys.setenv(COIN_API_KEY = apiKey)
   
 }
 
