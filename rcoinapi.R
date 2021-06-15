@@ -95,7 +95,7 @@ executeRequest <- function(method, path, params = NULL, body = NULL, retries = 0
     
   )
   
-  res
+  parseJSONResponse(res)
   
 }
 
@@ -105,11 +105,11 @@ setApiKey <- function(apiKey) {
   
 }
 
-parseJSONText <- function(res) {
+parseJSONResponse <- function(res) {
 
   resText <- content(res, as = "text")
   
-  fromJSON(resText)$result
+  fromJSON(resText, flatten = TRUE)
   
 }
 
