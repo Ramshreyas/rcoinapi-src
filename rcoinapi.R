@@ -88,14 +88,14 @@ executeRequest <- function(method, path, params = NULL, body = NULL, retries = 0
     METHOD(url,
            query = params,
            body,
-           add_headers(`X-CoinAPI-Key` = coinApiKey)
+           add_headers(`X-CoinAPI-Key` = apiKey)
     ),
     
     error = function(e) e
     
   )
   
-  parseJSONText(res)
+  res
   
 }
 
