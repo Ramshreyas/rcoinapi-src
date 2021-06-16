@@ -66,13 +66,13 @@ getAssetIcons <- function(sizeText) {
   
 }
 
-getSymbols <- function(symbolId = NULL, exchangeId = NULL) {
+getSymbols <- function(symbolId = NULL, exchangeId = NULL, assetId = NULL) {
   
-  if(is.list(symbolId) & is.list(exchangeId)) {
+  if(is.list(symbolId) & is.list(exchangeId) & is.list(assetId)) {
     
     endpoint <- SYMBOLS_ENDPOINT
     
-    executeRequest("GET", endpoint, params = list("filter_symbol_id" = listToStringArray(symbolId), "filter_exchange_id" = listToStringArray(exchangeId)))
+    executeRequest("GET", endpoint, params = list("filter_symbol_id" = listToStringArray(symbolId), "filter_exchange_id" = listToStringArray(exchangeId), "filter_asset_id" = listToStringArray(assetId)))
     
   } else {
     
