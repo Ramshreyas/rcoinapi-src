@@ -58,6 +58,14 @@ getAssets <- function(assetId = NULL) {
   
 }
 
+getAssetIcons <- function(sizeText) {
+  
+  endpoint <- paste0(ASSETS_ENDPOINT, "icons/", sizeText)
+  
+  executeRequest("GET", endpoint)
+  
+}
+
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
