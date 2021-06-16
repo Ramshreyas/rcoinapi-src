@@ -113,7 +113,6 @@ executeRequest <- function(method, path, params = NULL, body = NULL, retries = 0
 
 listToStringArray <- function(l) {
   
-  #stringArray <- curlEscape("{")
   stringArray <- ""
   
   for (item in l) {
