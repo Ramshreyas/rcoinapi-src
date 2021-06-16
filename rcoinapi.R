@@ -18,7 +18,7 @@ getExchanges <- function(exchangeId = NULL) {
   
   if(is.list(exchangeId)) {
     
-    endpoint <- paste0(EXCHANGES_ENDPOINT)
+    endpoint <- EXCHANGES_ENDPOINT
     
     executeRequest("GET", endpoint, params = list("filter_exchange_id" = listToStringArray(exchangeId)))
     
@@ -32,11 +32,37 @@ getExchanges <- function(exchangeId = NULL) {
   
 }
 
-getMarket <- function(symbol) {
+getExchangeIcons <- function(sizeText) {
   
-  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol)
+  endpoint <- paste0(EXCHANGES_ENDPOINT, "icons/", sizeText)
   
   executeRequest("GET", endpoint)
+  
+}
+
+getAssets <- function(assetId = NULL) {
+  
+  if(is.list(assetId)) {
+    
+    endpoint <- ASSETS_ENDPOINT
+    
+    executeRequest("GET", endpoint, params = list("filter_asset_id" = listToStringArray(assetId)))
+    
+  } else {
+    
+    endpoint <- paste0(ASSETS_ENDPOINT, assetId)
+    
+    executeRequest("GET", endpoint)
+    
+  }
+  
+}
+
+getTrades <- function(symbol, start_time_millis, end_time_millis) {
+  
+  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
+  
+  executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis))
   
 }
 
@@ -45,14 +71,6 @@ getOrderbook <- function(symbol, depth = 20) {
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/orderbook?depth=", depth)
   
   executeRequest("GET", endpoint)
-  
-}
-
-getTrades <- function(symbol, start_time_millis, end_time_millis) {
-
-  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
-  
-  executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis))
   
 }
 
