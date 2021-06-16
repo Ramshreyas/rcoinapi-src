@@ -16,17 +16,17 @@ ORDERBOOKL3_ENDPOINT <- "/v1/orderbooks3/"
 
 getExchanges <- function(exchangeId = NULL) {
   
-  if(length(exchangeId = 1)) {
+  if(is.list(exchangeId)) {
+    
+    endpoint <- paste0(EXCHANGES_ENDPOINT)
+    
+    executeRequest("GET", endpoint, params = list("filter_exchange_id" = listToStringArray(exchangeId)))
+    
+  } else {
     
     endpoint <- paste0(EXCHANGES_ENDPOINT, exchangeId)
     
     executeRequest("GET", endpoint)
-    
-  } else {
-    
-    endpoint <- paste0(EXCHANGES_ENDPOINT)
-    
-    executeRequest("GET", endpoint, list)
     
   }
   
@@ -105,7 +105,22 @@ executeRequest <- function(method, path, params = NULL, body = NULL, retries = 0
     
   )
   
+  print(res)
+  
   parseJSONResponse(res)
+  
+}
+
+listToStringArray <- function(l) {
+  
+  #stringArray <- curlEscape("{")
+  stringArray <- ""
+  
+  for (item in l) {
+    stringArray <- paste0(stringArray, item, ",")
+  }
+  
+  substr(stringArray, 1, nchar(stringArray) - 1)
   
 }
 
