@@ -100,6 +100,24 @@ getExchangeRate <- function(assetIdBase, assetIdQuote, time = NULL) {
   
 }
 
+getAllExchangeRates <- function(assetIdBase, invert = FALSE, filter_asset_id = NULL) {
+  
+  endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase)
+  
+  if(invert) inv <- "true" else inv <- "false"
+  
+  if(is.null(filter_asset_id)) {
+    
+    executeRequest("GET", endpoint, params = list("invert" = inv))
+    
+  } else {
+    
+    executeRequest("GET", endpoint, params = list("invert" = inv, "filter_asset_id" = listToStringArray(filter_asset_id)))
+    
+  }
+  
+}
+
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
