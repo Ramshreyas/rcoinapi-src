@@ -66,6 +66,24 @@ getAssetIcons <- function(sizeText) {
   
 }
 
+getSymbols <- function(symbolId = NULL, exchangeId = NULL) {
+  
+  if(is.list(symbolId) & is.list(exchangeId)) {
+    
+    endpoint <- SYMBOLS_ENDPOINT
+    
+    executeRequest("GET", endpoint, params = list("filter_symbol_id" = listToStringArray(symbolId), "filter_exchange_id" = listToStringArray(exchangeId)))
+    
+  } else {
+    
+    endpoint <- paste0(SYMBOLS_ENDPOINT, exchangeId)
+    
+    executeRequest("GET", endpoint)
+    
+  }
+  
+}
+
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
