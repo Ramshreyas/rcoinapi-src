@@ -84,6 +84,22 @@ getSymbols <- function(symbolId = NULL, exchangeId = NULL, assetId = NULL) {
   
 }
 
+getExchangeRate <- function(assetIdBase, assetIdQuote, time = NULL) {
+  
+  endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase, "/", assetIdQuote)
+  
+  if(is.null(time)) {
+    
+    executeRequest("GET", endpoint)
+    
+  } else {
+    
+    executeRequest("GET", endpoint, params = list("time" = time))
+    
+  }
+  
+}
+
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
