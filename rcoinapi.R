@@ -155,6 +155,28 @@ getOHLCVPeriods <- function() {
   
 }
 
+getLatestOHLCV <- function(assetIdBase,
+                           assetIdQuote = NULL,
+                           periodId,
+                           includeEmptyItems = FALSE,
+                           limit = 100) {
+  
+  if(is.null(assetIdQuote)) {
+    
+    endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/latest")
+    
+  } else {
+    
+    endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/", assetIdQuote, "/latest")
+    
+  }
+  
+  executeRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+  
+}
+
+
+
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
