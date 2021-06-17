@@ -126,17 +126,22 @@ getHistoricalExchangeRatePeriods <- function() {
   
 }
 
-getHistoricalExchangeRates <- function(assetIdBase, assetIdQuote, time = NULL) {
+getHistoricalExchangeRates <- function(assetIdBase, 
+                                       assetIdQuote, 
+                                       periodId,
+                                       timeStart, 
+                                       timeEnd,
+                                       limit = NULL) {
   
-  endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase, "/", assetIdQuote)
+  endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase, "/", assetIdQuote, "/history")
   
-  if(is.null(time)) {
+  if(is.null(limit)) {
     
-    executeRequest("GET", endpoint)
+    executeRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd))
     
   } else {
     
-    executeRequest("GET", endpoint, params = list("time" = time))
+    executeRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = limit))
     
   }
   
