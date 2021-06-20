@@ -171,7 +171,7 @@ getLatestOHLCV <- function(assetIdBase,
     
   }
   
-  executeRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+  executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
   
 }
 
@@ -200,24 +200,13 @@ getHistoricalPrices <- function(symbol, resolution, start_time_millis, end_time_
   executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis, resolution))
 }
 
-#----------------FUTURES---------------------------------------------------------------------------------------------
+#----------------TRADES---------------------------------------------------------------------------------------------
 
-getFutures <- function() {
-  
-  
-}
+#----------------QUOTES---------------------------------------------------------------------------------------------
 
-getFuture <- function(symbol) {}
+#----------------ORDERBOOK---------------------------------------------------------------------------------------------
 
-getFutureStats <- function(symbol) {}
-
-getFundingRates <- function(symbol, start_time_millis, end_time_millis) {}
-
-getIndexWeights <- function(symbol) {}
-
-getExpiredFutures <- function(symbol) {}
-
-getHistoricalIndex <- function(symbol, resolution, start_time_millis, end_time_millis) {}
+#----------------ORDERBOOKL3---------------------------------------------------------------------------------------------
 
 #----------------UTILS---------------------------------------------------------------------------------------------
 
@@ -246,6 +235,14 @@ executeRequest <- function(method, path, params = NULL, body = NULL, retries = 0
   
   parseJSONResponse(res)
   
+}
+
+executeXtsRequest <- function(method, path, params = NULL, body = NULL, retries = 0, indexBy = "time_period_start") {
+
+  res <- executeRequest(method, path, params, body, retries)
+  
+  xts(res, order.by = as_datetime(res[,indexBy]))
+   
 }
 
 listToStringArray <- function(l) {
