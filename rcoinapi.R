@@ -135,9 +135,13 @@ getHistoricalExchangeRates <- function(assetIdBase,
                                        timeEnd,
                                        limit = 100) {
   
+  symbolName <- paste0(assetIdBase, "/", assetIdQuote)
+  
   endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase, "/", assetIdQuote, "/history")
     
-  executeRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = as.character(limit)))
+  xtsData <- executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = as.character(limit)))
+  
+  renameOHLCVColumns(xtsData, symbolName)
   
 }
 
@@ -157,15 +161,21 @@ getLatestOHLCV <- function(assetIdBase,
   
   if(is.null(assetIdQuote)) {
     
+    symbolName <- assetIdBase
+    
     endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/latest")
     
   } else {
+    
+    symbolName <- paste0(assetIdBase, "/", assetIdQuote)
     
     endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/", assetIdQuote, "/latest")
     
   }
   
-  executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+  xtsData <- executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+  
+  renameOHLCVColumns(xtsData, symbolName)
   
 }
 
@@ -179,9 +189,13 @@ getHistoricalOHLCV <- function(assetIdBase,
   
   if(is.null(assetIdQuote)) {
     
+    symbolName <- assetIdBase
+    
     endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/latest")
     
   } else {
+    
+    symbolName <- paste0(assetIdBase, "/", assetIdQuote)
     
     endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/", assetIdQuote, "/latest")
     
@@ -189,13 +203,15 @@ getHistoricalOHLCV <- function(assetIdBase,
   
   if(is.null(timeEnd)) {
   
-    executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+    xtsData <- executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
     
   } else {
     
-    executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+    xtsDate <- executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
     
   }
+  
+  renameOHLCVColumns(xtsData, symbolName)
   
 }
 
@@ -265,6 +281,38 @@ executeXtsRequest <- function(method, path, params = NULL, body = NULL, retries 
   
   xts(res, order.by = as_datetime(res[,indexBy]))
    
+}
+
+renameOHLCVColumns <- function(xtsObject, symbolName) {
+  
+  if(ncol(xtsObject) == 8) {
+  
+    colnames(xtsObject) <- c("time_period_start",
+                             "time_period_end",
+                             "time_open",
+                             "time_close",
+                             paste0(symbolName, ".Open"),
+                             paste0(symbolName, ".High"),
+                             paste0(symbolName, ".Low"),
+                             paste0(symbolName, ".Close"))
+    
+  } else {
+    
+    colnames(xtsObject) <- c("time_period_start",
+                             "time_period_end",
+                             "time_open",
+                             "time_close",
+                             paste0(symbolName, ".Open"),
+                             paste0(symbolName, ".High"),
+                             paste0(symbolName, ".Low"),
+                             paste0(symbolName, ".Close"),
+                             paste0(symbolName, ".Volume"),
+                             "trades_count")
+    
+  }
+  
+  xtsObject
+  
 }
 
 listToStringArray <- function(l) {
