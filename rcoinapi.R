@@ -133,19 +133,11 @@ getHistoricalExchangeRates <- function(assetIdBase,
                                        periodId,
                                        timeStart, 
                                        timeEnd,
-                                       limit = NULL) {
+                                       limit = 100) {
   
   endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase, "/", assetIdQuote, "/history")
-  
-  if(is.null(limit)) {
     
-    executeRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd))
-    
-  } else {
-    
-    executeRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = limit))
-    
-  }
+  executeRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = as.character(limit)))
   
 }
 
@@ -177,7 +169,35 @@ getLatestOHLCV <- function(assetIdBase,
   
 }
 
-
+getHistoricalOHLCV <- function(assetIdBase,
+                               assetIdQuote = NULL,
+                               periodId,
+                               timeStart, 
+                               timeEnd = NULL,
+                               includeEmptyItems = FALSE,
+                               limit = 100) {
+  
+  if(is.null(assetIdQuote)) {
+    
+    endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/latest")
+    
+  } else {
+    
+    endpoint <- paste0(OHLCV_ENDPOINT, assetIdBase, "/", assetIdQuote, "/latest")
+    
+  }
+  
+  if(is.null(timeEnd)) {
+  
+    executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+    
+  } else {
+    
+    executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "time_start" = timeStart, "time_end" = timeEnd, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+    
+  }
+  
+}
 
 getTrades <- function(symbol, start_time_millis, end_time_millis) {
   
