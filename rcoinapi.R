@@ -173,9 +173,7 @@ getLatestOHLCV <- function(assetIdBase,
     
   }
   
-  data <- executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
-  
-  data
+  executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
   
 }
 
