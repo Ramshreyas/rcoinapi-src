@@ -68,7 +68,7 @@ getAssetIcons <- function(sizeText) {
   
 }
 
-getSymbols <- function(symbolId = NULL, exchangeId = NULL, assetId = NULL) {
+getCryptoSymbols <- function(symbolId = NULL, exchangeId = NULL, assetId = NULL) {
   
   if(is.list(symbolId) & is.list(exchangeId) & is.list(assetId)) {
     
