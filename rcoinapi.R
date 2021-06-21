@@ -1,5 +1,7 @@
 library(httr)
 library(jsonlite)
+library(lubridate)
+library(xts)
 
 BASE_URL <- "https://rest.coinapi.io"
 EXCHANGES_ENDPOINT <- "/v1/exchanges/"
@@ -171,7 +173,9 @@ getLatestOHLCV <- function(assetIdBase,
     
   }
   
-  executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+  data <- executeXtsRequest("GET", endpoint, params = list("period_id" = periodId, "limit" = as.character(limit), "include_empty_items" = includeEmptyItems))
+  
+  data
   
 }
 
