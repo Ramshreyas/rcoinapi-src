@@ -10,7 +10,7 @@ SYMBOLS_ENDPOINT <- "/v1/symbols/"
 EXCHANGERATE_ENDPOINT <- "/v1/exchangerate/"
 OHLCV_ENDPOINT <- "/v1/ohlcv/"
 TRADES_ENDPOINT <- "/v1/trades/"
-QUOTES_ENDPOINT <- "v1/quotes/"
+QUOTES_ENDPOINT <- "/v1/quotes/"
 ORDERBOOKS_ENDPOINT <- "/v1/orderbooks/"
 ORDERBOOKL3_ENDPOINT <- "/v1/orderbooks3/"
 
@@ -275,17 +275,33 @@ getHistoricalTrades <- function(symbol,
 
 #----------------QUOTES---------------------------------------------------------------------------------------------
 
+getQuotes <- function(symbol = NULL,
+                      filterSymbol = NULL) {
+  
+  if(is.null(symbol)) {
+    
+    endpoint <- paste0(QUOTES_ENDPOINT, "current")
+    
+  } else {
+  
+    endpoint <- paste0(QUOTES_ENDPOINT, symbol, "/current")
+    
+  }
 
+  if(is.null(filterSymbol)) {
+    
+    executeRequest("GET", endpoint)
+    
+  } else {
+    
+    executeRequest("GEt", endpoint, params = list("filter_symbol_id" = filterSymbol))
+    
+  }
+  
+}
 
 #----------------ORDERBOOK---------------------------------------------------------------------------------------------
 
-getOrderbook <- function(symbol, depth = 20) {
-  
-  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/orderbook?depth=", depth)
-  
-  executeRequest("GET", endpoint)
-  
-}
 
 
 #----------------ORDERBOOKL3---------------------------------------------------------------------------------------------
