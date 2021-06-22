@@ -282,19 +282,33 @@ getQuotes <- function(symbol = NULL,
     
     endpoint <- paste0(QUOTES_ENDPOINT, "current")
     
+    executeRequest("GET", endpoint, params = list("filter_symbol_id" = filterSymbol))
+    
   } else {
   
     endpoint <- paste0(QUOTES_ENDPOINT, symbol, "/current")
     
-  }
-
-  if(is.null(filterSymbol)) {
-    
     executeRequest("GET", endpoint)
+    
+  }
+  
+}
+
+getLatestQuotes <- function(symbol = NULL,
+                            filterSymbol = NULL,
+                            limit = 100) {
+  
+  if(is.null(symbol)) {
+    
+    endpoint <- paste0(QUOTES_ENDPOINT, "latest")
+    
+    executeRequest("GET", endpoint, params = list("filter_symbol_id" = filterSymbol, "limit" = limit))
     
   } else {
     
-    executeRequest("GET", endpoint, params = list("filter_symbol_id" = filterSymbol))
+    endpoint <- paste0(QUOTES_ENDPOINT, symbol, "/latest")
+    
+    executeRequest("GET", endpoint, params = list("limit" = limit))
     
   }
   
