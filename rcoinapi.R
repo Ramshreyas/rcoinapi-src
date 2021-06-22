@@ -68,7 +68,9 @@ getAssetIcons <- function(sizeText) {
   
 }
 
-getCryptoSymbols <- function(symbolId = NULL, exchangeId = NULL, assetId = NULL) {
+getCryptoSymbols <- function(symbolId = NULL, 
+                             exchangeId = NULL, 
+                             assetId = NULL) {
   
   if(is.list(symbolId) & is.list(exchangeId) & is.list(assetId)) {
     
@@ -86,7 +88,11 @@ getCryptoSymbols <- function(symbolId = NULL, exchangeId = NULL, assetId = NULL)
   
 }
 
-getExchangeRate <- function(assetIdBase, assetIdQuote, time = NULL) {
+#----------------ExchangeRates---------------------------------------------------------------------------------------------
+
+getExchangeRate <- function(assetIdBase, 
+                            assetIdQuote, 
+                            time = NULL) {
   
   endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase, "/", assetIdQuote)
   
@@ -102,7 +108,9 @@ getExchangeRate <- function(assetIdBase, assetIdQuote, time = NULL) {
   
 }
 
-getAllExchangeRates <- function(assetIdBase, invert = FALSE, filter_asset_id = NULL) {
+getAllExchangeRates <- function(assetIdBase, 
+                                invert = FALSE, 
+                                filter_asset_id = NULL) {
   
   endpoint <- paste0(EXCHANGERATE_ENDPOINT, assetIdBase)
   
@@ -144,6 +152,8 @@ getHistoricalExchangeRates <- function(assetIdBase,
   renameOHLCVColumns(xtsData, symbolName)
   
 }
+
+#----------------OHLCV---------------------------------------------------------------------------------------------
 
 getOHLCVPeriods <- function() {
   
@@ -215,10 +225,12 @@ getHistoricalOHLCV <- function(assetIdBase,
   
 }
 
-
 #----------------TRADES---------------------------------------------------------------------------------------------
 
-getTrades <- function(symbol = NULL, limit = 100, filterSymbol = NULL, include = FALSE) {
+getTrades <- function(symbol = NULL, 
+                      limit = 100, 
+                      filterSymbol = NULL, 
+                      include = FALSE) {
   
   if(is.null(symbol)) {
     
@@ -244,6 +256,20 @@ getTrades <- function(symbol = NULL, limit = 100, filterSymbol = NULL, include =
   }
   
   executeRequest("GET", endpoint, params = p)
+  
+}
+
+getHistoricalTrades <- function(symbol,
+                                timeStart, 
+                                timeEnd = NULL,
+                                limit = 100, 
+                                include = FALSE) {
+  
+  endpoint <- paste0(TRADES_ENDPOINT, symbol, "/history")
+    
+  p <- list("time_start" = timeStart, "time_end" = timeEnd, "limit" = limit, "include_id" = include)
+  
+  executeXtsRequest("GET", endpoint, params = p, indexBy = "time_exchange")
   
 }
 
