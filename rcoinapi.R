@@ -215,11 +215,32 @@ getHistoricalOHLCV <- function(assetIdBase,
   
 }
 
-getTrades <- function(symbol, start_time_millis, end_time_millis) {
+getTrades <- function(symbol = NULL, limit = 100, filterSymbol = NULL, include = FALSE) {
   
-  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/trades")
+  if(is.null(symbol)) {
+
+    endpoint <- paste0(TRADES_ENDPOINT, "latest")
+    
+    if(is.null(filterSymbol)) {
+
+      p <- list("limit" = limit)      
+      
+    } else {
+      
+      p <- list("limit" = limit, "filter_symbol_id" = filterSymbol)
+      
+    }
+
+    
+  } else {
+    
+    endpoint <- paste0(TRADES_ENDPOINT, "/", symbol, "/latest")
+    
+    p <- list("limit" = limit, "include_id" = include)
+    
+  }
   
-  executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis))
+  executeRequest("GET", endpoint, params = p)
   
 }
 
