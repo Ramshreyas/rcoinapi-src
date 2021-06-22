@@ -314,6 +314,19 @@ getLatestQuotes <- function(symbol = NULL,
   
 }
 
+getHistoricalQuotes <- function(symbol,
+                                timeStart, 
+                                timeEnd = NULL,
+                                limit = 100) {
+  
+  endpoint <- paste0(QUOTES_ENDPOINT, symbol, "/history")
+  
+  p <- list("time_start" = timeStart, "time_end" = timeEnd, "limit" = limit)
+  
+  executeXtsRequest("GET", endpoint, params = p, indexBy = "time_exchange")
+  
+}
+
 #----------------ORDERBOOK---------------------------------------------------------------------------------------------
 
 
