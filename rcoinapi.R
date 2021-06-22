@@ -294,7 +294,7 @@ getQuotes <- function(symbol = NULL,
     
   } else {
     
-    executeRequest("GEt", endpoint, params = list("filter_symbol_id" = filterSymbol))
+    executeRequest("GET", endpoint, params = list("filter_symbol_id" = filterSymbol))
     
   }
   
