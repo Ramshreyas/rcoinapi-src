@@ -215,14 +215,17 @@ getHistoricalOHLCV <- function(assetIdBase,
   
 }
 
+
+#----------------TRADES---------------------------------------------------------------------------------------------
+
 getTrades <- function(symbol = NULL, limit = 100, filterSymbol = NULL, include = FALSE) {
   
   if(is.null(symbol)) {
-
+    
     endpoint <- paste0(TRADES_ENDPOINT, "latest")
     
     if(is.null(filterSymbol)) {
-
+      
       p <- list("limit" = limit)      
       
     } else {
@@ -230,7 +233,7 @@ getTrades <- function(symbol = NULL, limit = 100, filterSymbol = NULL, include =
       p <- list("limit" = limit, "filter_symbol_id" = filterSymbol)
       
     }
-
+    
     
   } else {
     
@@ -244,6 +247,12 @@ getTrades <- function(symbol = NULL, limit = 100, filterSymbol = NULL, include =
   
 }
 
+#----------------QUOTES---------------------------------------------------------------------------------------------
+
+
+
+#----------------ORDERBOOK---------------------------------------------------------------------------------------------
+
 getOrderbook <- function(symbol, depth = 20) {
   
   endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/orderbook?depth=", depth)
@@ -252,20 +261,10 @@ getOrderbook <- function(symbol, depth = 20) {
   
 }
 
-getHistoricalPrices <- function(symbol, resolution, start_time_millis, end_time_millis) {
-  
-  endpoint <- paste0(MARKETS_ENDPOINT, "/", symbol, "/candles")
-  
-  executeRequest("GET", endpoint, params = paginate(start_time_millis, end_time_millis, resolution))
-}
-
-#----------------TRADES---------------------------------------------------------------------------------------------
-
-#----------------QUOTES---------------------------------------------------------------------------------------------
-
-#----------------ORDERBOOK---------------------------------------------------------------------------------------------
 
 #----------------ORDERBOOKL3---------------------------------------------------------------------------------------------
+
+
 
 #----------------UTILS---------------------------------------------------------------------------------------------
 
