@@ -11,7 +11,7 @@ EXCHANGERATE_ENDPOINT <- "/v1/exchangerate/"
 OHLCV_ENDPOINT <- "/v1/ohlcv/"
 TRADES_ENDPOINT <- "/v1/trades/"
 QUOTES_ENDPOINT <- "/v1/quotes/"
-ORDERBOOKS_ENDPOINT <- "/v1/orderbooks/"
+ORDERBOOK_ENDPOINT <- "/v1/orderbooks/"
 ORDERBOOKL3_ENDPOINT <- "/v1/orderbooks3/"
 
 #----------------MARKETS---------------------------------------------------------------------------------------------
@@ -335,7 +335,7 @@ getOrderbook <- function(symbol = NULL,
   
   if(is.null(symbol)) {
     
-    endpoint <- paste0(QUOTES_ENDPOINT, "current")
+    endpoint <- paste0(ORDERBOOK_ENDPOINT, "current")
     
     p <- list("filter_symbol_id" = filterSymbol, "limit_levels" = limitLevels)
     
@@ -348,6 +348,30 @@ getOrderbook <- function(symbol = NULL,
   }
   
   executeRequest("GET", endpoint, params = p)
+  
+}
+
+getLatestOrderbook <- function(symbol,
+                               limitLevels = 0,
+                               limit = 100) {
+  
+  endpoint <- paste0(ORDERBOOK_ENDPOINT, symbol, "/latest")
+  
+  executeRequest("GET", endpoint, params = list("limit" = limit, "limit_levels" = limitLevels))
+  
+}
+
+getHistoricalOrderBook <- function(symbol,
+                                   limitLevels = 0,
+                                   timeStart, 
+                                   timeEnd = NULL,
+                                   limit = 100) {
+  
+  endpoint <- paste0(ORDERBOOK_ENDPOINT, symbol, "/history")
+  
+  p <- list("time_start" = timeStart, "time_end" = timeEnd, "limit" = limit, "limit_levels" = limitLevels)
+  
+  executeXtsRequest("GET", endpoint, params = p, indexBy = "time_exchange")
   
 }
 
