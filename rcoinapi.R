@@ -377,7 +377,27 @@ getHistoricalOrderBook <- function(symbol,
 
 #----------------ORDERBOOKL3---------------------------------------------------------------------------------------------
 
-
+getOrderbookL3 <- function(symbol = NULL,
+                           filterSymbol = NULL,
+                           limitLevels = 0) {
+  
+  if(is.null(symbol)) {
+    
+    endpoint <- paste0(ORDERBOOKL3_ENDPOINT, "current")
+    
+    p <- list("filter_symbol_id" = filterSymbol, "limit_levels" = limitLevels)
+    
+  } else {
+    
+    endpoint <- paste0(QUOTES_ENDPOINT, symbol, "/current")
+    
+    p <- list("limit_levels" = limitLevels)
+    
+  }
+  
+  executeRequest("GET", endpoint, params = p)
+  
+}
 
 #----------------UTILS---------------------------------------------------------------------------------------------
 
