@@ -371,7 +371,7 @@ getHistoricalOrderBook <- function(symbol,
   
   p <- list("time_start" = timeStart, "time_end" = timeEnd, "limit" = limit, "limit_levels" = limitLevels)
   
-  executeXtsRequest("GET", endpoint, params = p, indexBy = "time_exchange")
+  executeRequest("GET", endpoint, params = p)
   
 }
 
